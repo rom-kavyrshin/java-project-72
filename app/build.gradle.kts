@@ -11,6 +11,10 @@ plugins {
 group = "hexlet.code"
 version = "1.0-SNAPSHOT"
 
+application {
+    mainClass = "hexlet.code.App"
+}
+
 sonar {
     properties {
         property("sonar.projectKey", "rom-kavyrshin_java-project-72")
