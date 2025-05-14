@@ -4,7 +4,7 @@ plugins {
     checkstyle
     jacoco
     id("org.sonarqube") version "6.0.1.5171"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.6"
     id("io.freefair.lombok") version "8.13.1"
 }
 
