@@ -18,3 +18,9 @@ test:
 
 report:
 	make -C app report
+
+image-build:
+	docker build -t rom-kavyrshin/java-project-72 -f Dockerfile .
+
+image-run:
+	docker run -p 8080:7070 rom-kavyrshin/java-project-72
