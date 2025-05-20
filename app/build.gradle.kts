@@ -34,6 +34,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.17")
     implementation("com.h2database:h2:2.3.232")
     implementation("com.zaxxer:HikariCP:6.3.0")
+    implementation("org.postgresql:postgresql:42.7.5")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
