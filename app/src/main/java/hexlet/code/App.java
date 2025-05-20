@@ -1,9 +1,17 @@
 package hexlet.code;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import hexlet.code.repository.BaseRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.sql.SQLException;
+import java.util.stream.Collectors;
 
 import static hexlet.code.util.Util.getEnv;
 
@@ -11,6 +19,11 @@ import static hexlet.code.util.Util.getEnv;
 public class App {
 
     public static Javalin getApp() {
+        try {
+            initDatabase();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
@@ -27,8 +40,26 @@ public class App {
         app.start(getPort());
     }
 
+    private static void initDatabase() throws SQLException {
+        var hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl(getJdbcUrl());
+        BaseRepository.dataSource = new HikariDataSource(hikariConfig);
+
+        var schema = App.class.getClassLoader().getResourceAsStream("schema.sql");
+        var sql = new BufferedReader(new InputStreamReader(schema)).lines().collect(Collectors.joining("\n"));
+
+        try (var connection = BaseRepository.dataSource.getConnection();
+             var statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
+    }
+
     private static int getPort() {
         String port = getEnv("PORT", "7070");
         return Integer.parseInt(port);
+    }
+
+    private static String getJdbcUrl() {
+        return getEnv("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1");
     }
 }
