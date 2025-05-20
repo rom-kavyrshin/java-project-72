@@ -19,6 +19,9 @@ import static hexlet.code.util.Util.getEnv;
 public class App {
 
     public static Javalin getApp() {
+        log.info("jdbc url: {}", getJdbcUrl());
+        log.info("port: {}", getPort());
+
         try {
             initDatabase();
         } catch (SQLException e) {
