@@ -49,3 +49,7 @@ tasks.jacocoTestReport {
         xml.required = true
     }
 }
+
+tasks.shadowJar {
+    mergeServiceFiles()
+}
