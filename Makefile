@@ -24,3 +24,6 @@ image-build:
 
 image-run:
 	docker run -p 8080:7070 --env-file local.env rom-kavyrshin/java-project-72
+
+image-run-it:
+	docker run -it -p 8080:7070 --env-file local.env rom-kavyrshin/java-project-72 bash
