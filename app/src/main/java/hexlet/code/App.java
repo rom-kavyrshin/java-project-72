@@ -44,11 +44,15 @@ public class App {
     }
 
     private static void initDatabase() throws SQLException {
+        var jdbcUrl = getJdbcUrl();
+        var isDbPostgres = jdbcUrl.toLowerCase().startsWith("jdbc:postgresql");
+        var schemaName = isDbPostgres ? "schema_postgresql.sql" : "schema.sql";
+
         var hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(getJdbcUrl());
+        hikariConfig.setJdbcUrl(jdbcUrl);
         BaseRepository.dataSource = new HikariDataSource(hikariConfig);
 
-        var schema = App.class.getClassLoader().getResourceAsStream("schema.sql");
+        var schema = App.class.getClassLoader().getResourceAsStream(schemaName);
         var sql = new BufferedReader(new InputStreamReader(schema)).lines().collect(Collectors.joining("\n"));
 
         try (var connection = BaseRepository.dataSource.getConnection();
