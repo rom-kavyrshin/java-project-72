@@ -2,6 +2,9 @@ package hexlet.code;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import gg.jte.resolve.ResourceCodeResolver;
 import hexlet.code.repository.BaseRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
@@ -30,7 +33,7 @@ public class App {
 
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
-            config.fileRenderer(new JavalinJte());
+            config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
         app.get(NamedRoutes.rootPath(), context -> context.result("Hello world"));
@@ -41,6 +44,13 @@ public class App {
     public static void main(String[] args) {
         Javalin app = getApp();
         app.start(getPort());
+    }
+
+    private static TemplateEngine createTemplateEngine() {
+        return TemplateEngine.create(
+                new ResourceCodeResolver("templates", App.class.getClassLoader()),
+                ContentType.Html
+        );
     }
 
     private static void initDatabase() throws SQLException {
