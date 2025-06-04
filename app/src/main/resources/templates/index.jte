@@ -2,6 +2,7 @@
 @import hexlet.code.dto.root.RootPage
 @param RootPage page
 @template.layout.page(
+page = page,
 content = @`
     <main>
         <div class="container-fluid bg-primary p-5">
