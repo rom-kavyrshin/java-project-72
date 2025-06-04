@@ -25,7 +25,7 @@ public class UrlsController {
             urlString = url.getProtocol() + url.getHost() + (url.getPort() == -1 ? "" : url.getPort());
             var urlModel = new Url(urlString);
             UrlRepository.save(urlModel);
-            ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Успех", true));
+            ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Страница успешно добавлена", true));
 
             ctx.redirect(NamedRoutes.rootPath());
         } catch (ValidationException e) {
