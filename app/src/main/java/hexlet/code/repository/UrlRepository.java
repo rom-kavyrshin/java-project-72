@@ -4,6 +4,7 @@ import hexlet.code.model.Url;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 
 public class UrlRepository extends BaseRepository {
 
@@ -23,6 +24,24 @@ public class UrlRepository extends BaseRepository {
             }
 
             return true;
+        }
+    }
+
+    public static Optional<Url> findByUrl(String urlString) throws SQLException {
+        var sql = "SELECT * FROM urls WHERE name = ?";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, urlString);
+            var resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                var id = resultSet.getLong("id");
+                var name = resultSet.getString("name");
+                var createdAt = resultSet.getTimestamp("created_at");
+                var urlModel = new Url(name, createdAt);
+                urlModel.setId(id);
+                return Optional.of(urlModel);
+            }
+            return Optional.empty();
         }
     }
 }
