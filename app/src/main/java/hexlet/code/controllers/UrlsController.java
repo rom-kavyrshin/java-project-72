@@ -1,6 +1,7 @@
 package hexlet.code.controllers;
 
 import hexlet.code.dto.base.FlashMessage;
+import hexlet.code.exception.SiteAlreadyPresentException;
 import hexlet.code.model.Url;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
@@ -24,7 +25,9 @@ public class UrlsController {
                     .get();
             var url = new URI(urlString).toURL();
             urlString = url.getProtocol() + url.getHost() + (url.getPort() == -1 ? "" : url.getPort());
-            var urlModel = new Url(urlString);
+            if (UrlRepository.findByUrl(urlString).isPresent()) {
+                throw new SiteAlreadyPresentException();
+            }
             var urlModel = new Url(urlString, new Timestamp(System.currentTimeMillis()));
             UrlRepository.save(urlModel);
             ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Страница успешно добавлена", true));
@@ -36,6 +39,10 @@ public class UrlsController {
             ctx.redirect(NamedRoutes.rootPath());
         } catch (URISyntaxException | MalformedURLException | IllegalArgumentException e) {
             ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Некорректный URL", false));
+
+            ctx.redirect(NamedRoutes.rootPath());
+        } catch (SiteAlreadyPresentException e) {
+            ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Страница уже существует", false));
 
             ctx.redirect(NamedRoutes.rootPath());
         }
