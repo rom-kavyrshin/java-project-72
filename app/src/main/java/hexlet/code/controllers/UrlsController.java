@@ -8,7 +8,9 @@ import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import hexlet.code.util.Util;
 import io.javalin.http.Context;
+import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.validation.ValidationException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -18,6 +20,7 @@ import java.sql.Timestamp;
 import static hexlet.code.util.SessionKeys.SESSION_STORE_FLASH_MESSAGE_KEY;
 import static io.javalin.rendering.template.TemplateUtil.model;
 
+@Slf4j
 public class UrlsController {
 
     public static void index(Context ctx) {
@@ -26,7 +29,8 @@ public class UrlsController {
             urlsPage.setFlashMessage(ctx.consumeSessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY));
             ctx.render("urls.jte", model("page", urlsPage));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage());
+            throw new InternalServerErrorResponse();
         }
     }
 
