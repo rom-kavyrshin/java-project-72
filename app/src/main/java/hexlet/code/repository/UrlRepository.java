@@ -4,6 +4,8 @@ import hexlet.code.model.Url;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UrlRepository extends BaseRepository {
@@ -42,6 +44,24 @@ public class UrlRepository extends BaseRepository {
                 return Optional.of(urlModel);
             }
             return Optional.empty();
+        }
+    }
+
+    public static List<Url> getAll() throws SQLException {
+        var sql = "SELECT * FROM urls";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            var resultSet = stmt.executeQuery();
+            var result = new ArrayList<Url>();
+            while (resultSet.next()) {
+                var id = resultSet.getLong("id");
+                var name = resultSet.getString("name");
+                var createdAt = resultSet.getTimestamp("created_at");
+                var urlModel = new Url(name, createdAt);
+                urlModel.setId(id);
+                result.add(urlModel);
+            }
+            return result;
         }
     }
 }
