@@ -39,7 +39,7 @@ public class App {
         });
 
         app.get(NamedRoutes.rootPath(), RootController::index);
-        app.post(NamedRoutes.urls(), UrlsController::create);
+        app.post(NamedRoutes.urlsPath(), UrlsController::create);
 
         return app;
     }
