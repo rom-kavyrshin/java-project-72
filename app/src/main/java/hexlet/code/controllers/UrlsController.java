@@ -23,8 +23,8 @@ public class UrlsController {
             var urlString = ctx.formParamAsClass("url", String.class)
                     .check(value -> !value.isEmpty(), "Ссылка не должна быть пустой")
                     .get();
-            var url = new URI(urlString).toURL();
-            urlString = url.getProtocol() + url.getHost() + (url.getPort() == -1 ? "" : url.getPort());
+            urlString = Util.shrinkUrl(urlString);
+
             if (UrlRepository.findByUrl(urlString).isPresent()) {
                 throw new SiteAlreadyPresentException();
             }
