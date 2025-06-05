@@ -27,7 +27,7 @@ public class UrlsController {
         try {
             UrlsPage urlsPage = new UrlsPage(UrlRepository.getAll());
             urlsPage.setFlashMessage(ctx.consumeSessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY));
-            ctx.render("urls.jte", model("page", urlsPage));
+            ctx.render("urls/index.jte", model("page", urlsPage));
         } catch (SQLException e) {
             log.error(e.getMessage());
             throw new InternalServerErrorResponse();
