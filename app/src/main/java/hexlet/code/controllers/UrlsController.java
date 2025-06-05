@@ -1,22 +1,34 @@
 package hexlet.code.controllers;
 
 import hexlet.code.dto.base.FlashMessage;
+import hexlet.code.dto.urls.UrlsPage;
 import hexlet.code.exception.SiteAlreadyPresentException;
 import hexlet.code.model.Url;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
+import hexlet.code.util.Util;
 import io.javalin.http.Context;
 import io.javalin.validation.ValidationException;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import static hexlet.code.util.SessionKeys.SESSION_STORE_FLASH_MESSAGE_KEY;
+import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class UrlsController {
+
+    public static void index(Context ctx) {
+        try {
+            UrlsPage urlsPage = new UrlsPage(UrlRepository.getAll());
+            urlsPage.setFlashMessage(ctx.consumeSessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY));
+            ctx.render("urls.jte", model("page", urlsPage));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void create(Context ctx) throws SQLException {
         try {
