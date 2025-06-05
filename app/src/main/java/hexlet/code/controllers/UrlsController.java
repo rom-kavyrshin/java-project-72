@@ -1,6 +1,7 @@
 package hexlet.code.controllers;
 
 import hexlet.code.dto.base.FlashMessage;
+import hexlet.code.dto.urls.UrlDetailPage;
 import hexlet.code.dto.urls.UrlsPage;
 import hexlet.code.exception.SiteAlreadyPresentException;
 import hexlet.code.model.Url;
@@ -9,6 +10,7 @@ import hexlet.code.util.NamedRoutes;
 import hexlet.code.util.Util;
 import io.javalin.http.Context;
 import io.javalin.http.InternalServerErrorResponse;
+import io.javalin.http.NotFoundResponse;
 import io.javalin.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Optional;
 
 import static hexlet.code.util.SessionKeys.SESSION_STORE_FLASH_MESSAGE_KEY;
 import static io.javalin.rendering.template.TemplateUtil.model;
@@ -62,5 +65,24 @@ public class UrlsController {
 
             ctx.redirect(NamedRoutes.rootPath());
         }
+    }
+
+    public static void show(Context context) {
+        int urlId = context.pathParamAsClass("id", Integer.class).getOrDefault(-1);
+
+        Optional<Url> urlOptional;
+        try {
+            urlOptional = UrlRepository.find(urlId);
+        } catch (SQLException e) {
+            throw new InternalServerErrorResponse();
+        }
+
+        urlOptional.ifPresentOrElse((it) -> {
+            var page = new UrlDetailPage(it);
+            page.setFlashMessage(context.consumeSessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY));
+            context.render("urls/show.jte", model("page", page));
+        }, () -> {
+            throw new NotFoundResponse("Url not found");
+        });
     }
 }
