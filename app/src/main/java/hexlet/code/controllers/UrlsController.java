@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import static hexlet.code.util.SessionKeys.SESSION_STORE_FLASH_MESSAGE_KEY;
 
@@ -24,6 +25,7 @@ public class UrlsController {
             var url = new URI(urlString).toURL();
             urlString = url.getProtocol() + url.getHost() + (url.getPort() == -1 ? "" : url.getPort());
             var urlModel = new Url(urlString);
+            var urlModel = new Url(urlString, new Timestamp(System.currentTimeMillis()));
             UrlRepository.save(urlModel);
             ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Страница успешно добавлена", true));
 

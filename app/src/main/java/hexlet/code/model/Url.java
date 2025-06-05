@@ -14,8 +14,8 @@ public class Url {
     private String name;
     private Timestamp createdAt;
 
-    public Url(String name) {
+    public Url(String name, Timestamp timestamp) {
         this.name = name;
-        this.createdAt = new Timestamp(System.currentTimeMillis());
+        this.createdAt = timestamp;
     }
 }
