@@ -13,6 +13,7 @@ import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.http.NotFoundResponse;
 import io.javalin.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.jetty.http.HttpStatus;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -53,6 +54,7 @@ public class UrlsController {
             UrlRepository.save(urlModel);
             ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Страница успешно добавлена", true));
 
+            ctx.status(HttpStatus.CREATED_201);
             ctx.redirect(NamedRoutes.rootPath());
         } catch (ValidationException e) {
             ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Ошибка валидации", false));
