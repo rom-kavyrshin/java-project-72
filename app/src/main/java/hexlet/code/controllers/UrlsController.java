@@ -44,6 +44,8 @@ public class UrlsController {
                     .get();
             urlString = Util.shrinkUrl(urlString);
 
+            log.info("UrlsController.create: " + urlString);
+
             if (UrlRepository.findByUrl(urlString).isPresent()) {
                 throw new SiteAlreadyPresentException();
             }
