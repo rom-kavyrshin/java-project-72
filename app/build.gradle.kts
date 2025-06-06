@@ -29,6 +29,7 @@ repositories {
 
 dependencies {
     implementation("io.javalin:javalin:6.6.0")
+    implementation("io.javalin:javalin-bundle:6.6.0")
     implementation("io.javalin:javalin-rendering:6.6.0")
     implementation("gg.jte:jte:3.2.1")
     implementation("org.slf4j:slf4j-simple:2.0.17")
@@ -38,6 +39,7 @@ dependencies {
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core:3.27.3")
 }
 
 tasks.test {
