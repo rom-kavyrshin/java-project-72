@@ -65,7 +65,7 @@ public class AppTest {
     }
 
     @Test
-    public void testSyntaxUrlException() {
+    public void testUrlSyntaxException() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             var requestBody = "url=httpsexample.com";
             try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
