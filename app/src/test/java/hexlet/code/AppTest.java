@@ -103,4 +103,31 @@ public class AppTest {
             }
         });
     }
+
+    @Test
+    public void testShow() {
+        JavalinTest.test(app, testConfig, (server, client) -> {
+            var requestBody = "url=https://ya.ru";
+
+            try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string()).contains("Страница успешно добавлена");
+            }
+
+            try (var response = client.get(NamedRoutes.urlPath(1))) {
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string()).contains("https://ya.ru");
+            }
+        });
+    }
+
+    @Test
+    public void testShowNotFound() {
+        JavalinTest.test(app, testConfig, (server, client) -> {
+            try (var response = client.get(NamedRoutes.urlPath(1))) {
+                assertThat(response.code()).isEqualTo(404);
+                assertThat(response.body().string()).contains("Url not found");
+            }
+        });
+    }
 }
