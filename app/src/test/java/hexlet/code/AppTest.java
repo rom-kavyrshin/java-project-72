@@ -66,6 +66,19 @@ public class AppTest {
     }
 
     @Test
+    public void testCreateUrlWithParams() {
+        JavalinTest.test(app, testConfig, (server, client) -> {
+            var requestBody = "url=https://ya.ru:5050?param1=42";
+            try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string()).contains("Страница успешно добавлена");
+            }
+            var urlsResponse = client.get(NamedRoutes.urlsPath());
+            assertThat(urlsResponse.body().string()).contains("https://ya.ru:5050");
+        });
+    }
+
+    @Test
     public void testUrlSyntaxException() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             var requestBody = "url=httpsexample.com";
