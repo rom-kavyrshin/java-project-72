@@ -39,6 +39,7 @@ public class UrlsController {
     }
 
     public static void create(Context ctx) throws SQLException {
+        log.info("UrlsController.create begin");
         try {
             var urlString = ctx.formParamAsClass("url", String.class)
                     .check(value -> !value.isEmpty(), "Ссылка не должна быть пустой")
@@ -57,14 +58,17 @@ public class UrlsController {
             ctx.status(HttpStatus.CREATED_201);
             ctx.redirect(NamedRoutes.rootPath());
         } catch (ValidationException e) {
+            log.error("UrlsController.create ValidationException");
             ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Ошибка валидации", false));
 
             ctx.redirect(NamedRoutes.rootPath());
         } catch (URISyntaxException | MalformedURLException | IllegalArgumentException e) {
+            log.error("UrlsController.create URISyntaxException");
             ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Некорректный URL", false));
 
             ctx.redirect(NamedRoutes.rootPath());
         } catch (SiteAlreadyPresentException e) {
+            log.error("UrlsController.create SiteAlreadyPresentException");
             ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Страница уже существует", false));
 
             ctx.redirect(NamedRoutes.rootPath());
