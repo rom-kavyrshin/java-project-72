@@ -75,4 +75,32 @@ public class AppTest {
             }
         });
     }
+
+    @Test
+    public void testUrlValidationException() {
+        JavalinTest.test(app, testConfig, (server, client) -> {
+            var requestBody = "url=";
+            try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string()).contains("Ошибка валидации");
+            }
+        });
+    }
+
+    @Test
+    public void testCreateSameUrlTwice() {
+        JavalinTest.test(app, testConfig, (server, client) -> {
+            var requestBody = "url=https://ya.ru";
+
+            try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string()).contains("Страница успешно добавлена");
+            }
+
+            try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string()).contains("Страница уже существует");
+            }
+        });
+    }
 }
