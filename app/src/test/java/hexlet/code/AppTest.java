@@ -54,13 +54,14 @@ public class AppTest {
 
     @Test
     public void testCreateUrl() {
-        JavalinTest.test(app, (server, client) -> {
+        JavalinTest.test(app, testConfig, (server, client) -> {
             var requestBody = "url=https://ya.ru";
             try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
                 assertThat(response.code()).isEqualTo(200);
-                var urlsResponse = client.get(NamedRoutes.urlsPath());
-                assertThat(urlsResponse.body().string()).contains("https://ya.ru");
+                assertThat(response.body().string()).contains("Страница успешно добавлена");
             }
+            var urlsResponse = client.get(NamedRoutes.urlsPath());
+            assertThat(urlsResponse.body().string()).contains("https://ya.ru");
         });
     }
 
