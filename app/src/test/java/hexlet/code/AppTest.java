@@ -118,6 +118,20 @@ public class AppTest {
     }
 
     @Test
+    public void testUrls() {
+        JavalinTest.test(app, testConfig, (server, client) -> {
+            UrlRepository.save(new Url("https://ya.ru", Timestamp.from(Instant.now())));
+            UrlRepository.save(new Url("https://example.com", Timestamp.from(Instant.now())));
+            UrlRepository.save(new Url("https://vk.com", Timestamp.from(Instant.now())));
+
+            var urlsResponse = client.get(NamedRoutes.urlsPath()).body().string();
+            assertThat(urlsResponse).contains("https://ya.ru");
+            assertThat(urlsResponse).contains("https://example.com");
+            assertThat(urlsResponse).contains("https://vk.com");
+        });
+    }
+
+    @Test
     public void testShow() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             var requestBody = "url=https://ya.ru";
