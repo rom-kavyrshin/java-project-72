@@ -17,7 +17,10 @@ public class Util {
 
     public static String shrinkUrl(String urlString) throws URISyntaxException, MalformedURLException {
         var url = new URI(urlString).toURL();
-        return url.getProtocol() + PROTOCOL_DELIMETER + url.getHost() + (url.getPort() == -1 ? "" : ":" + url.getPort());
+        return url.getProtocol()
+                + PROTOCOL_DELIMETER
+                + url.getHost()
+                + (url.getPort() == -1 ? "" : ":" + url.getPort());
     }
 
     public static String formatTimestamp(Timestamp timestamp) {
