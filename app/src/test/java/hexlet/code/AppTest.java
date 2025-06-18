@@ -141,7 +141,7 @@ public class AppTest {
                 assertThat(response.body().string()).contains("Страница успешно добавлена");
             }
 
-            try (var response = client.get(NamedRoutes.urlPath(1))) {
+            try (var response = client.get(NamedRoutes.urlDetailPath(1))) {
                 assertThat(response.code()).isEqualTo(200);
                 assertThat(response.body().string()).contains("https://ya.ru");
             }
@@ -151,7 +151,7 @@ public class AppTest {
     @Test
     public void testShowNotFound() {
         JavalinTest.test(app, testConfig, (server, client) -> {
-            try (var response = client.get(NamedRoutes.urlPath(1))) {
+            try (var response = client.get(NamedRoutes.urlDetailPath(1))) {
                 assertThat(response.code()).isEqualTo(404);
                 assertThat(response.body().string()).contains("Url not found");
             }

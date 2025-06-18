@@ -23,7 +23,7 @@ content = @`
                         ${url.getId()}
                     </td>
                     <td>
-                        <a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a>
+                        <a href="${NamedRoutes.urlDetailPath(url.getId())}">${url.getName()}</a>
                     </td>
                     <td>
                         empty
