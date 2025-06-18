@@ -17,4 +17,12 @@ public class NamedRoutes {
     public static String urlPath(String urlId) {
         return urlsPath() + "/" + urlId;
     }
+
+    public static String urlCheckPath(long urlId) {
+        return urlCheckPath(String.valueOf(urlId));
+    }
+
+    public static String urlCheckPath(String urlId) {
+        return urlsPath() + "/" + urlId + "/checks";
+    }
 }
