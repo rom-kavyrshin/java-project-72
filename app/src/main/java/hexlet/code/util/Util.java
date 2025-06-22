@@ -26,4 +26,15 @@ public class Util {
     public static String formatTimestamp(Timestamp timestamp) {
         return DATE_TIME_FORMATTER.format(timestamp.toLocalDateTime());
     }
+
+    public static String substring(String source, String beginString, String endString) {
+        var begin = source.indexOf(beginString) + beginString.length();
+        var end = source.indexOf(endString);
+
+        if (begin == -1 || end == -1 || begin > end) {
+            return "";
+        }
+
+        return source.substring(begin, end);
+    }
 }
