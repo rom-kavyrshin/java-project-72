@@ -45,7 +45,14 @@ public class UrlCheckController {
                     var title = cutTagContent(body, "title");
                     var h1 = cutTagContent(body, "h1");
 
-                    UrlCheck urlCheck = new UrlCheck(response.getStatus(), title, h1, "", url.getId(), new Timestamp(System.currentTimeMillis()));
+                    UrlCheck urlCheck = new UrlCheck(
+                            response.getStatus(),
+                            title,
+                            h1,
+                            "",
+                            url.getId(),
+                            new Timestamp(System.currentTimeMillis())
+                    );
                     log.info(urlCheck.toString());
                 });
     }
