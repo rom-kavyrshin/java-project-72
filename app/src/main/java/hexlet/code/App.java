@@ -11,6 +11,7 @@ import hexlet.code.repository.BaseRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
+import kong.unirest.core.Unirest;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -26,6 +27,9 @@ public class App {
     public static Javalin getApp() {
         log.info("jdbc url: {}", getJdbcUrl());
         log.info("port: {}", getPort());
+
+        Unirest.config()
+                .connectTimeout(1000);
 
         try {
             initDatabase();
