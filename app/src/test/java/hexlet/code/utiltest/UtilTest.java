@@ -11,6 +11,8 @@ public class UtilTest {
     public void testUrlRemoveAll() {
         assertThat(Util.substring("<title>Something</title>", "<title>", "</title>")).isEqualTo("Something");
         assertThat(Util.substring("<title>Something<title>", "<title>", "</title>")).isEqualTo("");
+        assertThat(Util.substring("<someprevious><title href=\"\">Something</title>", "<title>", "</title>"))
+                .isEqualTo("");
         assertThat(Util.substring("</title>Something<title>", "<title>", "</title>")).isEqualTo("");
     }
 }

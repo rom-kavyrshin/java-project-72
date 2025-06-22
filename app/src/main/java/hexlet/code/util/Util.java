@@ -28,12 +28,14 @@ public class Util {
     }
 
     public static String substring(String source, String beginString, String endString) {
-        var begin = source.indexOf(beginString) + beginString.length();
+        var begin = source.indexOf(beginString);
         var end = source.indexOf(endString);
 
         if (begin == -1 || end == -1 || begin > end) {
             return "";
         }
+
+        begin += beginString.length();
 
         return source.substring(begin, end);
     }
