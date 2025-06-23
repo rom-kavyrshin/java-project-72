@@ -2,6 +2,7 @@ package hexlet.code.controllers;
 
 import hexlet.code.model.Url;
 import hexlet.code.model.UrlCheck;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
@@ -40,7 +41,7 @@ public class UrlCheckController {
 
         return Unirest.get(url.getName())
                 .asStringAsync()
-                .thenAccept(response -> {
+                .thenApply(response -> {
                     var body = response.getBody();
                     var title = cutTagContent(body, "title");
                     var h1 = cutTagContent(body, "h1");
@@ -54,6 +55,14 @@ public class UrlCheckController {
                             new Timestamp(System.currentTimeMillis())
                     );
                     log.info(urlCheck.toString());
+                    return urlCheck;
+                })
+                .thenAccept(urlCheck -> {
+                    try {
+                        UrlCheckRepository.save(urlCheck);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
     }
 
