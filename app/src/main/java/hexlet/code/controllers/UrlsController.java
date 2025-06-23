@@ -5,6 +5,7 @@ import hexlet.code.dto.urls.UrlDetailPage;
 import hexlet.code.dto.urls.UrlsPage;
 import hexlet.code.exception.SiteAlreadyPresentException;
 import hexlet.code.model.Url;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import hexlet.code.util.Util;
@@ -20,6 +21,7 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static hexlet.code.util.SessionKeys.SESSION_STORE_FLASH_MESSAGE_KEY;
 import static io.javalin.rendering.template.TemplateUtil.model;
@@ -85,8 +87,16 @@ public class UrlsController {
             throw new InternalServerErrorResponse();
         }
 
+        var urlChecks = urlOptional.stream().flatMap(it -> {
+            try {
+                return UrlCheckRepository.getAllWhereUrlId(it.getId()).stream();
+            } catch (SQLException e) {
+                return Stream.empty();
+            }
+        }).toList();
+
         urlOptional.ifPresentOrElse((it) -> {
-            var page = new UrlDetailPage(it);
+            var page = new UrlDetailPage(it, urlChecks);
             page.setFlashMessage(context.consumeSessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY));
             context.render("urls/show.jte", model("page", page));
         }, () -> {
