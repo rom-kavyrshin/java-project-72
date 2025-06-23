@@ -43,7 +43,28 @@ content = @`
                 </tr>
                 </thead>
                 <tbody>
-
+                    @for(var urlCheck : page.getUrlChecks())
+                        <tr>
+                            <td>
+                                ${urlCheck.getId()}
+                            </td>
+                            <td>
+                                ${urlCheck.getStatusCode()}
+                            </td>
+                            <td>
+                                ${urlCheck.getTitle()}
+                            </td>
+                            <td>
+                                ${urlCheck.getH1()}
+                            </td>
+                            <td>
+                                ${urlCheck.getDescription()}
+                            </td>
+                            <td>
+                                ${Util.formatTimestamp(urlCheck.getCreatedAt())}
+                            </td>
+                        </tr>
+                    @endfor
                 </tbody>
             </table>
         </div>
