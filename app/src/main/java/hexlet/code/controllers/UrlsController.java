@@ -31,7 +31,7 @@ public class UrlsController {
 
     public static void index(Context ctx) {
         try {
-            UrlsPage urlsPage = new UrlsPage(UrlRepository.getAll());
+            UrlsPage urlsPage = new UrlsPage(UrlRepository.getAllWithLastCheck());
             urlsPage.setFlashMessage(ctx.consumeSessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY));
             ctx.render("urls/index.jte", model("page", urlsPage));
         } catch (SQLException e) {
