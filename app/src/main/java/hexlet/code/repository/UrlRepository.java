@@ -1,5 +1,6 @@
 package hexlet.code.repository;
 
+import hexlet.code.dto.urls.UrlDTO;
 import hexlet.code.model.Url;
 
 import java.sql.SQLException;
@@ -76,6 +77,35 @@ public class UrlRepository extends BaseRepository {
                 var createdAt = resultSet.getTimestamp("created_at");
                 var urlModel = new Url(name, createdAt);
                 urlModel.setId(id);
+                result.add(urlModel);
+            }
+            return result;
+        }
+    }
+
+    public static List<UrlDTO> getAllWithLastCheck() throws SQLException {
+        var sql = """
+            SELECT
+                u.id,
+                u.name,
+                uc.status_code AS last_check_status,
+                uc.created_at AS last_check_time
+            FROM urls u
+            LEFT JOIN url_checks uc ON u.id = uc.url_id
+            LEFT JOIN url_checks uc2 ON u.id = uc2.url_id
+                AND (uc.created_at < uc2.created_at OR uc.created_at = uc2.created_at AND uc.id < uc2.id)
+            WHERE uc2.url_id IS NULL;
+        """;
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            var resultSet = stmt.executeQuery();
+            var result = new ArrayList<UrlDTO>();
+            while (resultSet.next()) {
+                var id = resultSet.getLong("id");
+                var name = resultSet.getString("name");
+                var lastCheckStatus = resultSet.getInt("last_check_status");
+                var lastCheckTime = resultSet.getTimestamp("last_check_time");
+                var urlModel = new UrlDTO(id, name, lastCheckStatus, lastCheckTime);
                 result.add(urlModel);
             }
             return result;
