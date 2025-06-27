@@ -30,6 +30,7 @@ public class App {
         log.info("port: {}", getPort());
 
         Unirest.config()
+                .reset()
                 .connectTimeout(1000);
 
         try {
