@@ -39,6 +39,7 @@ dependencies {
     implementation("com.konghq:unirest-java-core:4.4.7")
     implementation("org.jsoup:jsoup:1.20.1")
 
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.27.3")
