@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static hexlet.code.TestUtil.getOkHttpClient;
 import static hexlet.code.TestUtil.readFixture;
@@ -72,14 +71,12 @@ public class UrlCheckTest {
                 assertThat(response.code()).isEqualTo(200);
 
                 assertThat(response.body().string())
-                        .contains(
-                                mockWebServers.stream()
-                                        .map(it -> {
-                                            var url = it.url("").toString();
-                                            return url.substring(0, url.length() - 1);
-                                        })
-                                        .collect(Collectors.toCollection(ArrayList<String>::new))
-                        );
+                        .contains(mockWebServers.stream()
+                                .map(it -> {
+                                    var url = it.url("").toString();
+                                    return url.substring(0, url.length() - 1);
+                                })
+                                .toList());
             }
 
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!! UrlRepository.getAll " + UrlRepository.getAll());

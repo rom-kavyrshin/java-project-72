@@ -95,7 +95,7 @@ public class UrlRepository extends BaseRepository {
             LEFT JOIN url_checks uc2 ON u.id = uc2.url_id
                 AND (uc.created_at < uc2.created_at OR uc.created_at = uc2.created_at AND uc.id < uc2.id)
             WHERE uc2.url_id IS NULL;
-        """;
+            """;
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             var resultSet = stmt.executeQuery();
