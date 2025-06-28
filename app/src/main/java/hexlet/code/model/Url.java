@@ -3,10 +3,12 @@ package hexlet.code.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
 @EqualsAndHashCode
+@ToString
 @Getter
 @Setter
 public class Url {
