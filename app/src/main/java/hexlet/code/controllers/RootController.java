@@ -6,7 +6,10 @@ import io.javalin.http.Context;
 import static hexlet.code.util.SessionKeys.SESSION_STORE_FLASH_MESSAGE_KEY;
 import static io.javalin.rendering.template.TemplateUtil.model;
 
-public class RootController {
+public final class RootController {
+
+    private RootController() {
+    }
 
     public static void index(Context context) {
         var rootPage = new RootPage();

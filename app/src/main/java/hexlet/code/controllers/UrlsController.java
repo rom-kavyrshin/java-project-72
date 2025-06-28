@@ -27,7 +27,10 @@ import static hexlet.code.util.SessionKeys.SESSION_STORE_FLASH_MESSAGE_KEY;
 import static io.javalin.rendering.template.TemplateUtil.model;
 
 @Slf4j
-public class UrlsController {
+public final class UrlsController {
+
+    private UrlsController() {
+    }
 
     public static void index(Context ctx) {
         try {
@@ -95,7 +98,7 @@ public class UrlsController {
             }
         }).toList();
 
-        urlOptional.ifPresentOrElse((it) -> {
+        urlOptional.ifPresentOrElse(it -> {
             var page = new UrlDetailPage(it, urlChecks);
             page.setFlashMessage(context.consumeSessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY));
             context.render("urls/show.jte", model("page", page));

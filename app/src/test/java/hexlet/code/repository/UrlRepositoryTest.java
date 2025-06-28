@@ -20,14 +20,14 @@ class UrlRepositoryTest {
     private TestConfig testConfig;
 
     @BeforeEach
-    public final void setUp() throws SQLException {
+    final void setUp() throws SQLException {
         app = App.getApp();
         testConfig = new TestConfig(false, true, getOkHttpClient());
         UrlRepository.removeAll();
     }
 
     @Test
-    public void testUrlRemoveAll() throws SQLException {
+    void testUrlRemoveAll() throws SQLException {
         UrlRepository.save(new Url("https://first.com", Timestamp.from(Instant.now())));
         UrlRepository.save(new Url("https://second.com", Timestamp.from(Instant.now())));
         UrlRepository.removeAll();

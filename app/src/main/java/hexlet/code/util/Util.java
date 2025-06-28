@@ -6,7 +6,10 @@ import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 
-public class Util {
+public final class Util {
+
+    private Util() {
+    }
 
     private static final String PROTOCOL_DELIMETER = "://";
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm:ss");

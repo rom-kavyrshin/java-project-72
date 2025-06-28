@@ -21,14 +21,14 @@ import static hexlet.code.TestUtil.getOkHttpClient;
 import static hexlet.code.TestUtil.readFixture;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class UrlCheckTest {
+class UrlCheckTest {
 
     private Javalin app;
     private TestConfig testConfig;
     private final List<MockWebServer> mockWebServers = new ArrayList<>();
 
     @BeforeEach
-    public final void setUp() throws Exception {
+    final void setUp() throws Exception {
         app = App.getApp();
         testConfig = new TestConfig(false, true, getOkHttpClient());
         prepareMockServers();
@@ -53,7 +53,7 @@ public class UrlCheckTest {
     }
 
     @Test
-    public void testExample() throws IOException, InterruptedException {
+    void testExample() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             // Добавляем все серверы на проверку
             for (var mockServer : mockWebServers) {
@@ -112,7 +112,7 @@ public class UrlCheckTest {
     }
 
     @AfterEach
-    public final void tearDown() throws SQLException, IOException {
+    final void tearDown() throws SQLException, IOException {
         UrlCheckRepository.removeAll();
         UrlRepository.removeAll();
 

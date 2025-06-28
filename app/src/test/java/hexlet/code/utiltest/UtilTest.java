@@ -5,14 +5,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class UtilTest {
+class UtilTest {
 
     @Test
-    public void testUrlRemoveAll() {
+    void testUrlRemoveAll() {
         assertThat(Util.substring("<title>Something</title>", "<title>", "</title>")).isEqualTo("Something");
-        assertThat(Util.substring("<title>Something<title>", "<title>", "</title>")).isEqualTo("");
+        assertThat(Util.substring("<title>Something<title>", "<title>", "</title>")).isEmpty();
         assertThat(Util.substring("<someprevious><title href=\"\">Something</title>", "<title>", "</title>"))
-                .isEqualTo("");
-        assertThat(Util.substring("</title>Something<title>", "<title>", "</title>")).isEqualTo("");
+                .isEmpty();
+        assertThat(Util.substring("</title>Something<title>", "<title>", "</title>")).isEmpty();
     }
 }

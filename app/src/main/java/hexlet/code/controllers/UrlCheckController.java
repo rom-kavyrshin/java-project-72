@@ -18,7 +18,10 @@ import java.sql.Timestamp;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-public class UrlCheckController {
+public final class UrlCheckController {
+
+    private UrlCheckController() {
+    }
 
     public static void checkUrlHandler(Context context) {
 

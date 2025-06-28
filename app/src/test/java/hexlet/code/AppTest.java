@@ -16,20 +16,20 @@ import java.time.Instant;
 import static hexlet.code.TestUtil.getOkHttpClient;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class AppTest {
+class AppTest {
 
     private Javalin app;
     private TestConfig testConfig;
 
     @BeforeEach
-    public final void setUp() throws SQLException {
+    final void setUp() throws SQLException {
         app = App.getApp();
         testConfig = new TestConfig(false, true, getOkHttpClient());
         UrlRepository.removeAll();
     }
 
     @Test
-    public void testRootPath() {
+    void testRootPath() {
         JavalinTest.test(app, (server, client) -> {
             try (var response = client.get(NamedRoutes.rootPath())) {
                 assertThat(response.code()).isEqualTo(200);
@@ -39,7 +39,7 @@ public class AppTest {
     }
 
     @Test
-    public void testCreateUrl() {
+    void testCreateUrl() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             var requestBody = "url=https://ya.ru";
             try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
@@ -52,7 +52,7 @@ public class AppTest {
     }
 
     @Test
-    public void testCreateUrlWithParams() {
+    void testCreateUrlWithParams() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             var requestBody = "url=https://ya.ru:5050?param1=42";
             try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
@@ -65,7 +65,7 @@ public class AppTest {
     }
 
     @Test
-    public void testUrlSyntaxException() {
+    void testUrlSyntaxException() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             var requestBody = "url=httpsexample.com";
             try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
@@ -76,7 +76,7 @@ public class AppTest {
     }
 
     @Test
-    public void testUrlValidationException() {
+    void testUrlValidationException() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             var requestBody = "url=";
             try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
@@ -87,7 +87,7 @@ public class AppTest {
     }
 
     @Test
-    public void testCreateSameUrlTwice() {
+    void testCreateSameUrlTwice() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             var requestBody = "url=https://ya.ru";
 
@@ -104,7 +104,7 @@ public class AppTest {
     }
 
     @Test
-    public void testUrls() {
+    void testUrls() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             UrlRepository.save(new Url("https://ya.ru", Timestamp.from(Instant.now())));
             UrlRepository.save(new Url("https://example.com", Timestamp.from(Instant.now())));
@@ -118,7 +118,7 @@ public class AppTest {
     }
 
     @Test
-    public void testShow() {
+    void testShow() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             var requestBody = "url=https://ya.ru";
 
@@ -135,7 +135,7 @@ public class AppTest {
     }
 
     @Test
-    public void testShowNotFound() {
+    void testShowNotFound() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             try (var response = client.get(NamedRoutes.urlDetailPath(1))) {
                 assertThat(response.code()).isEqualTo(404);

@@ -7,7 +7,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UrlCheckRepository extends BaseRepository {
+public final class UrlCheckRepository extends BaseRepository {
+
+    private UrlCheckRepository() {
+    }
 
     public static boolean save(UrlCheck urlCheck) throws SQLException {
         String sql = """
