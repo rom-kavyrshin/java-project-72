@@ -1,10 +1,11 @@
 package hexlet.code;
 
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
+import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
+import io.javalin.testtools.JavalinTest;
 import io.javalin.testtools.TestConfig;
-import kong.unirest.core.Unirest;
-import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
@@ -13,62 +14,113 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static hexlet.code.TestUtil.getOkHttpClient;
+import static hexlet.code.TestUtil.readFixture;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class UrlCheckTest {
 
     private Javalin app;
     private TestConfig testConfig;
-
-    OkHttpClient client;
+    private final List<MockWebServer> mockWebServers = new ArrayList<>();
 
     @BeforeEach
-    public final void setUp() throws SQLException {
-        client = new OkHttpClient();
-
+    public final void setUp() throws Exception {
         app = App.getApp();
         testConfig = new TestConfig(false, true, getOkHttpClient());
-        UrlRepository.removeAll();
+        prepareMockServers();
+    }
+
+    private void prepareMockServers() throws Exception {
+        MockWebServer server = new MockWebServer();
+        MockWebServer server2 = new MockWebServer();
+        MockWebServer server3 = new MockWebServer();
+
+        server.enqueue(new MockResponse().setBody(readFixture("url_check", "first_site.html")));
+        server2.enqueue(new MockResponse().setBody(readFixture("url_check", "second_site.html")));
+        server3.enqueue(new MockResponse().setBody(readFixture("url_check", "third_site.html")));
+
+        mockWebServers.add(server);
+        mockWebServers.add(server2);
+        mockWebServers.add(server3);
+
+        for (var item : mockWebServers) {
+            item.start();
+        }
     }
 
     @Test
     public void testExample() throws IOException, InterruptedException {
-        MockWebServer server = new MockWebServer();
-        MockWebServer server2 = new MockWebServer();
+        JavalinTest.test(app, testConfig, (server, client) -> {
+            // Добавляем все серверы на проверку
+            for (var mockServer : mockWebServers) {
+                var mockServerUrl = mockServer.url("").toString();
+                var requestBody = "url=" + mockServerUrl;
 
-        server.enqueue(new MockResponse().setBody("hello, world!"));
-        server.enqueue(new MockResponse().setBody("sup, bra?"));
-        server.enqueue(new MockResponse().setBody("yo dog"));
+                try (var response = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                    assertThat(response.code()).isEqualTo(200);
+                    assertThat(response.body().string()).contains("Страница успешно добавлена");
+                }
+            }
 
-        server2.enqueue(new MockResponse().setBody("server 2 is speaking"));
+            // Проверяем что добавились все серверы на странице /urls
+            try (var response = client.get(NamedRoutes.urlsPath())) {
+                assertThat(response.code()).isEqualTo(200);
 
-        server.start();
-        server2.start();
+                assertThat(response.body().string())
+                        .contains(
+                                mockWebServers.stream()
+                                        .map(it -> {
+                                            var url = it.url("").toString();
+                                            return url.substring(0, url.length() - 1);
+                                        })
+                                        .collect(Collectors.toCollection(ArrayList<String>::new))
+                        );
+            }
 
-        System.out.println("@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! server1url " + server.url(""));
-        System.out.println("@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! server2url " + server2.url(""));
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!! UrlRepository.getAll " + UrlRepository.getAll());
 
-        var mockServerUrl = server.url("").toString();
+            // Вызываем check для каждого сайта
+            for (int i = 1; i <= mockWebServers.size(); i++) {
+                try (var response = client.post(NamedRoutes.urlCheckPath(i))) {
+                    assertThat(response.code()).isEqualTo(200);
+                }
+            }
 
-        var result = Unirest.get(mockServerUrl).asString().getBody();
-        var result2 = Unirest.get(server2.url("").toString()).asString().getBody();
+            try (var response = client.get(NamedRoutes.urlDetailPath(1))) {
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string())
+                        .contains("pizza store")
+                        .contains("Buy pizza");
+            }
 
-        var path = server.takeRequest().getPath();
-        System.out.println("@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! path " + path);
-        System.out.println("@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! result2 " + result2);
+            try (var response = client.get(NamedRoutes.urlDetailPath(2))) {
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string())
+                        .contains("Smithereens")
+                        .contains("Share ur moments with friends");
+            }
 
-        assertThat(result).isEqualTo("hello, world!");
-
-        server.close();
-        server2.close();
+            try (var response = client.get(NamedRoutes.urlDetailPath(3))) {
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string())
+                        .contains("Napster")
+                        .contains("Listen music without restrictions");
+            }
+        });
     }
 
     @AfterEach
-    public final void tearDown() throws SQLException {
-        app = App.getApp();
-        testConfig = new TestConfig(false, true, getOkHttpClient());
+    public final void tearDown() throws SQLException, IOException {
+        UrlCheckRepository.removeAll();
         UrlRepository.removeAll();
+
+        for (var server : mockWebServers) {
+            server.close();
+        }
     }
 }
