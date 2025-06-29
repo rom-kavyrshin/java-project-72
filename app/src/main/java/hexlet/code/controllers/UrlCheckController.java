@@ -70,6 +70,9 @@ public final class UrlCheckController {
     }
 
     private static String cutTagContent(String source, String tag) {
+        if (source == null) {
+            return "";
+        }
         Document doc = Jsoup.parse(source);
         return doc.select(tag).text();
     }
