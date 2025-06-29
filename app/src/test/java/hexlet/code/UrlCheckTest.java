@@ -53,7 +53,7 @@ class UrlCheckTest {
     }
 
     @Test
-    void testExample() {
+    void testChecks() {
         JavalinTest.test(app, testConfig, (server, client) -> {
             // Добавляем все серверы на проверку
             for (var mockServer : mockWebServers) {
