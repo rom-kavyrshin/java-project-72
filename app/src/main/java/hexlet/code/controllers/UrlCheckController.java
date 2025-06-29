@@ -12,7 +12,7 @@ import kong.unirest.core.Unirest;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
+import org.jsoup.nodes.Element;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -51,12 +51,14 @@ public final class UrlCheckController {
 
                     var title = cutTagContent(doc, "title").text();
                     var h1 = cutTagContent(doc, "h1").text();
+                    var descriptionContentAttribute = cutTagContent(doc, "meta[name=description]").attribute("content");
+                    var description = descriptionContentAttribute != null ? descriptionContentAttribute.getValue() : "";
 
                     UrlCheck urlCheck = new UrlCheck(
                             response.getStatus(),
                             title,
                             h1,
-                            "",
+                            description,
                             url.getId(),
                             new Timestamp(System.currentTimeMillis())
                     );
