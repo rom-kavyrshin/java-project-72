@@ -12,6 +12,7 @@ import kong.unirest.core.Unirest;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -46,8 +47,10 @@ public final class UrlCheckController {
                 .asStringAsync()
                 .thenApply(response -> {
                     var body = response.getBody();
-                    var title = cutTagContent(body, "title");
-                    var h1 = cutTagContent(body, "h1");
+                    Document doc = Jsoup.parse(body != null ? body : "");
+
+                    var title = cutTagContent(doc, "title").text();
+                    var h1 = cutTagContent(doc, "h1").text();
 
                     UrlCheck urlCheck = new UrlCheck(
                             response.getStatus(),
@@ -69,11 +72,8 @@ public final class UrlCheckController {
                 });
     }
 
-    private static String cutTagContent(String source, String tag) {
-        if (source == null) {
-            return "";
-        }
-        Document doc = Jsoup.parse(source);
-        return doc.select(tag).text();
+    private static Element cutTagContent(Document source, String tag) {
+        var result = source.selectFirst(tag);
+        return result != null ? result : new Element("empty_text");
     }
 }
