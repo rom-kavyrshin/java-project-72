@@ -113,7 +113,8 @@ class UrlCheckTest {
                 assertThat(response.body().string())
                         .contains("200")
                         .contains("Napster")
-                        .contains("Listen music without restrictions");
+                        .contains("Listen music without restrictions")
+                        .contains("The HTML reference describes all elements and attributes of HTML.");
             }
 
             try (var response = client.get(NamedRoutes.urlDetailPath(4))) {
