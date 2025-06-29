@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomCookieJar implements CookieJar {
+public final class CustomCookieJar implements CookieJar {
 
     private final List<Cookie> cookies = new ArrayList<>();
 
