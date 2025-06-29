@@ -38,6 +38,7 @@ class UrlCheckTest {
         MockWebServer server = new MockWebServer();
         MockWebServer server2 = new MockWebServer();
         MockWebServer server3 = new MockWebServer();
+        MockWebServer server4 = new MockWebServer();
 
         server.enqueue(new MockResponse().setBody(readFixture("url_check", "first_site.html")));
         server2.enqueue(new MockResponse().setBody(readFixture("url_check", "second_site.html")));
@@ -46,10 +47,13 @@ class UrlCheckTest {
         mockWebServers.add(server);
         mockWebServers.add(server2);
         mockWebServers.add(server3);
+        mockWebServers.add(server4);
 
         for (var item : mockWebServers) {
             item.start();
         }
+
+        server4.close();
     }
 
     @Test
@@ -110,6 +114,12 @@ class UrlCheckTest {
                         .contains("200")
                         .contains("Napster")
                         .contains("Listen music without restrictions");
+            }
+
+            try (var response = client.get(NamedRoutes.urlDetailPath(4))) {
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string())
+                        .contains("542");
             }
         });
     }
