@@ -91,6 +91,7 @@ class UrlCheckTest {
             try (var response = client.get(NamedRoutes.urlDetailPath(1))) {
                 assertThat(response.code()).isEqualTo(200);
                 assertThat(response.body().string())
+                        .contains("200")
                         .contains("pizza store")
                         .contains("Buy pizza");
             }
@@ -98,6 +99,7 @@ class UrlCheckTest {
             try (var response = client.get(NamedRoutes.urlDetailPath(2))) {
                 assertThat(response.code()).isEqualTo(200);
                 assertThat(response.body().string())
+                        .contains("200")
                         .contains("Smithereens")
                         .contains("Share ur moments with friends");
             }
@@ -105,6 +107,7 @@ class UrlCheckTest {
             try (var response = client.get(NamedRoutes.urlDetailPath(3))) {
                 assertThat(response.code()).isEqualTo(200);
                 assertThat(response.body().string())
+                        .contains("200")
                         .contains("Napster")
                         .contains("Listen music without restrictions");
             }
