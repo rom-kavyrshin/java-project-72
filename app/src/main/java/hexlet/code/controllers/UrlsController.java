@@ -61,7 +61,7 @@ public final class UrlsController {
             ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Страница успешно добавлена", true));
 
             ctx.status(HttpStatus.CREATED_201);
-            ctx.redirect(NamedRoutes.rootPath());
+            ctx.redirect(NamedRoutes.urlsPath());
         } catch (ValidationException e) {
             log.error("UrlsController.create ValidationException");
             ctx.sessionAttribute(SESSION_STORE_FLASH_MESSAGE_KEY, new FlashMessage("Ошибка валидации", false));
